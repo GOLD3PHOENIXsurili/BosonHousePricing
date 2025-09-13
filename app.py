@@ -28,11 +28,19 @@ def predict_api():
     data = request.get_json(force=True)   # dict with key "data"
     record = data['data'][0]              # get the first item from the list
     features = np.array(list(record.values())).reshape(1, -1)
-    
     new_data = scaler.transform(features)
     print(features)
     output = regmodel.predict(features)[0]
     return jsonify({'prediction': output})
+
+
+@app.route('/predict',methods=['POST'])
+def predict():
+    data=[float(x) for x in request.form.values()]
+    final_input = scaler.transform(np.array(data).reshape(1,-1))
+    print(final_input)
+    output = regmodel.predict(final_input)[0]
+    return render_template('home.html',prediction_text="The House price prediction is {}".format(output))
 
 
 
