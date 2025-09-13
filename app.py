@@ -28,10 +28,16 @@ def predict_api():
     data = request.get_json(force=True)   # dict with key "data"
     record = data['data'][0]              # get the first item from the list
     features = np.array(list(record.values())).reshape(1, -1)
+    
+    # Scale the features
     new_data = scaler.transform(features)
-    print(features)
-    output = regmodel.predict(features)[0]
-    return jsonify({'prediction': output})
+    print(new_data)   # <- optional debug
+    
+    # Predict using scaled features
+    output = regmodel.predict(new_data)[0]
+    
+    return jsonify({'prediction': float(output)})
+
 
 
 @app.route('/predict',methods=['POST'])
